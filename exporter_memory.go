@@ -110,9 +110,19 @@ var (
 			"Memory preallocated/reserved by the kernel but not the runtime",
 			memoryLabels,
 		),
-		"memory.total": newGaugeVec(
-			"memory_total_bytes",
-			"Node-local total memory",
+		"memory.total.allocated": newGaugeVec(
+			"memory_total_allocated_bytes",
+			"Node-local total memory - allocated",
+			memoryLabels,
+		),
+		"memory.total.rss": newGaugeVec(
+			"memory_total_rss_bytes",
+			"Node-local total memory - rss",
+			memoryLabels,
+		),
+		"memory.total.erlang": newGaugeVec(
+			"memory_total_erlang_bytes",
+			"Node-local total memory - erlang",
 			memoryLabels,
 		),
 	}
