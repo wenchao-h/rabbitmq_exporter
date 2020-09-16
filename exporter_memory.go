@@ -12,107 +12,107 @@ func init() {
 }
 
 var (
-	memoryLabels = []string{"cluster", "node"}
+	memoryLabels = []string{"cluster", "node", "self"}
 
 	memoryGaugeVec = map[string]*prometheus.GaugeVec{
 		"memory.allocated_unused": newGaugeVec(
 			"memory_allocated_unused_bytes",
-			"memory preallocated by the runtime (VM allocators) but not yet used",
+			"Memory preallocated by the runtime (VM allocators) but not yet used",
 			memoryLabels,
 		),
 		"memory.atom": newGaugeVec(
 			"memory_atom_bytes",
-			"memory used by atoms. Should be fairly constant",
+			"Memory used by atoms. Should be fairly constant",
 			memoryLabels,
 		),
 		"memory.binary": newGaugeVec(
 			"memory_binary_bytes",
-			"memory used by shared binary data in the runtime. Most of this memory is message bodies and metadata.)",
+			"Memory used by shared binary data in the runtime. Most of this memory is message bodies and metadata.)",
 			memoryLabels,
 		),
 		"memory.code": newGaugeVec(
 			"memory_code_bytes",
-			"memory used by code (bytecode, module metadata). This section is usually fairly constant and relatively small (unless the node is entirely blank and stores no data).",
+			"Memory used by code (bytecode, module metadata). This section is usually fairly constant and relatively small (unless the node is entirely blank and stores no data).",
 			memoryLabels,
 		),
 		"memory.connection_channels": newGaugeVec(
 			"memory_connection_channels_bytes",
-			"memory used by client connections - channels",
+			"Memory used by client connections - channels",
 			memoryLabels,
 		),
 		"memory.connection_other": newGaugeVec(
 			"memory_connection_other_bytes",
-			"memory used by client connection - other",
+			"Memory used by client connection - other",
 			memoryLabels,
 		),
 		"memory.connection_readers_bytes": newGaugeVec(
 			"memory_connection_readers",
-			"memory used by processes responsible for connection parser and most of connection state. Most of their memory attributes to TCP buffers",
+			"Memory used by processes responsible for connection parser and most of connection state. Most of their memory attributes to TCP buffers",
 			memoryLabels,
 		),
 		"memory.connection_writers": newGaugeVec(
 			"memory_connection_writers_bytes",
-			"memory used by processes responsible for serialization of outgoing protocol frames and writing to client connections socktes",
+			"Memory used by processes responsible for serialization of outgoing protocol frames and writing to client connections socktes",
 			memoryLabels,
 		),
 		"memory.metrics": newGaugeVec(
 			"memory_metrics_bytes",
-			"node-local metrics. The more connections, channels, queues are node hosts, the more stats there are to collect and keep",
+			"Node-local metrics. The more connections, channels, queues are node hosts, the more stats there are to collect and keep",
 			memoryLabels,
 		),
 		"memory.mgmt_db": newGaugeVec(
 			"memory_mgmt_db_bytes",
-			"management DB ETS tables + processes",
+			"Management DB ETS tables + processes",
 			memoryLabels,
 		),
 		"memory.mnesia": newGaugeVec(
 			"memory_mnesia_bytes",
-			"internal database (Mnesia) tables keep an in-memory copy of all its data (even on disc nodes)",
+			"Internal database (Mnesia) tables keep an in-memory copy of all its data (even on disc nodes)",
 			memoryLabels,
 		),
 		"memory.msg_index": newGaugeVec(
 			"memory_msg_index_bytes",
-			"message index ETS + processes",
+			"Message index ETS + processes",
 			memoryLabels,
 		),
 		"memory.other_ets": newGaugeVec(
 			"memory_other_ets_bytes",
-			"other in-memory tables besides those belonging to the stats database and internal database tables",
+			"Other in-memory tables besides those belonging to the stats database and internal database tables",
 			memoryLabels,
 		),
 		"memory.other_proc": newGaugeVec(
 			"memory_other_proc_bytes",
-			"memory used by all other processes that RabbitMQ cannot categorise",
+			"Memory used by all other processes that RabbitMQ cannot categorise",
 			memoryLabels,
 		),
 		"memory.other_system": newGaugeVec(
 			"memory_other_system_bytes",
-			"memory used by all other system that RabbitMQ cannot categorise",
+			"Memory used by all other system that RabbitMQ cannot categorise",
 			memoryLabels,
 		),
 		"memory.plugins": newGaugeVec(
 			"memory_plugins_bytes",
-			"memory used by plugins (apart from the Erlang client which is counted under Connections, and the management database which is counted separately). ",
+			"Memory used by plugins (apart from the Erlang client which is counted under Connections, and the management database which is counted separately). ",
 			memoryLabels,
 		),
 		"memory.queue_procs": newGaugeVec(
 			"memory_queue_procs_bytes",
-			"memory used by class queue masters, queue indices, queue state",
+			"Memory used by class queue masters, queue indices, queue state",
 			memoryLabels,
 		),
 		"memory.queue_slave_procs": newGaugeVec(
 			"memory_queue_slave_procs_bytes",
-			"memory used by class queue mirrors, queue indices, queue state",
+			"Memory used by class queue mirrors, queue indices, queue state",
 			memoryLabels,
 		),
 		"memory.reserved_unallocated": newGaugeVec(
 			"memory_reserved_unallocated_bytes",
-			"memory preallocated/reserved by the kernel but not the runtime",
+			"Memory preallocated/reserved by the kernel but not the runtime",
 			memoryLabels,
 		),
 		"memory.total": newGaugeVec(
 			"memory_total_bytes",
-			"total memory",
+			"Node-local total memory",
 			memoryLabels,
 		),
 	}
@@ -150,15 +150,28 @@ func (e exporterMemory) Collect(ctx context.Context, ch chan<- prometheus.Metric
 	if n, ok := ctx.Value(clusterName).(string); ok {
 		cluster = n
 	}
-	rabbitMemoryResponses, err := getMetricMap(config, fmt.Sprintf("nodes/%s/memory", selfNode))
+
+	nodeData, err := getStatsInfo(config, "nodes", nodeLabelKeys)
 	if err != nil {
 		return err
 	}
-	for key, gauge := range e.memoryMetricsGauge {
-		if value, ok := rabbitMemoryResponses[key]; ok {
-			gauge.WithLabelValues(cluster, selfNode).Set(value)
+
+	for _, node := range nodeData {
+		self := "0"
+		if node.labels["name"] == selfNode {
+			self = "1"
+		}
+		rabbitMemoryResponses, err := getMetricMap(config, fmt.Sprintf("nodes/%s/memory", node.labels["name"]))
+		if err != nil {
+			return err
+		}
+		for key, gauge := range e.memoryMetricsGauge {
+			if value, ok := rabbitMemoryResponses[key]; ok {
+				gauge.WithLabelValues(cluster, node.labels["name"], self).Set(value)
+			}
 		}
 	}
+
 	for _, gauge := range e.memoryMetricsGauge {
 		gauge.Collect(ch)
 	}
