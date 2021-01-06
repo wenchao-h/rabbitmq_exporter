@@ -115,6 +115,11 @@ func (e *exporter) Collect(ch chan<- prometheus.Metric) {
 		e.upMetric.WithLabelValues(e.overviewExporter.NodeInfo().ClusterName, e.overviewExporter.NodeInfo().Node).Set(0)
 	}
 	e.lastScrapeOK = allUp
+
+	if e.overviewExporter.NodeInfo().ClusterName != "" && e.overviewExporter.NodeInfo().Node != "" {
+		e.upMetric.DeleteLabelValues("", "")
+	}
+
 	e.upMetric.Collect(ch)
 	e.endpointUpMetric.Collect(ch)
 	e.endpointScrapeDurationMetric.Collect(ch)
@@ -148,6 +153,9 @@ func (e *exporter) collectWithDuration(ex Exporter, name string, ch chan<- prome
 			up.WithLabelValues(cluster, node, name).Set(0)
 		} else {
 			up.WithLabelValues(cluster, node, name).Set(1)
+		}
+		if node != "" && cluster != "" {
+			up.DeleteLabelValues("", "", name)
 		}
 	}
 	return err
