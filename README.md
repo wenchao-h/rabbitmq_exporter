@@ -59,7 +59,7 @@ INCLUDE_VHOST | .* | regex vhost filter. Only queues in matching vhosts are expo
 INCLUDE_QUEUES | .* | regex queue filter. Just matching names are exported
 SKIP_QUEUES | ^$ |regex, matching queue names are not exported (useful for short-lived rpc queues). First performed INCLUDE, after SKIP
 RABBIT_CAPABILITIES | bert,no_sort | comma-separated list of extended scraping capabilities supported by the target RabbitMQ server
-RABBIT_EXPORTERS | exchange,node,queue | List of enabled modules. Possible modules: connections,shovel,federation,exchange,node,queue
+RABBIT_EXPORTERS | exchange,node,queue | List of enabled modules. Possible modules: connections,shovel,federation,exchange,node,queue,memory
 RABBIT_TIMEOUT | 30 | timeout in seconds for retrieving data from management plugin.
 MAX_QUEUES | 0 | max number of queues before we drop metrics (disabled if set to 0)
 EXCLUDE_METRICS | | Metric names to exclude from export. comma-seperated. e.g. "recv_oct, recv_cnt". See exporter_*.go for names
@@ -87,7 +87,7 @@ following capabilities are currently supported in
    encoding is implemented in C inside the Erlang VM, it's way more
    effective than pure-Erlang JSON encoding. So this greatly reduces
    monitoring overhead when we have a lot of objects in RabbitMQ.
-   
+
 **Note for users of rabbmitmq < 3.6**
 
 no_sort and bert are enabled by default. You must overwrite the default settings with:
@@ -210,7 +210,7 @@ _disabled by default_. Depending on the environment and change rate it can creat
 
 Labels: cluster, vhost, node, peer_host, user, self
 
-Please note: The data is aggregated by label values as it is possible that there are multiple connections for a certain combination of labels. 
+Please note: The data is aggregated by label values as it is possible that there are multiple connections for a certain combination of labels.
 
 metric | description
 -------| ------------
