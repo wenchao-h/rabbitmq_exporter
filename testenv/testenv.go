@@ -15,7 +15,7 @@ import (
 
 	"log"
 
-	"gopkg.in/ory-am/dockertest.v3"
+	dockertest "github.com/ory/dockertest/v3"
 )
 
 //list of docker tags with rabbitmq versions
