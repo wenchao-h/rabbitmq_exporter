@@ -1,9 +1,12 @@
 # Accept the Go version for the image to be set as a build argument.
-# Default to Go 1.11
 ARG GO_VERSION=1.15
-
 # First stage: build the executable.
 FROM golang:${GO_VERSION}-alpine AS builder
+
+ARG VERSION=""
+ARG BRANCH=""
+ARG COMMIT=""
+
 
 # Create the user and group files that will be used in the running container to
 # run the process as an unprivileged user.
@@ -30,9 +33,9 @@ COPY ./ ./
 # Build the executable to `/app`. Mark the build as statically linked.
 RUN CGO_ENABLED=0 go build \
     -installsuffix 'static' \
-    -ldflags "-X main.Revision=$(git rev-list -1 HEAD) \
-        -X main.Branch=$(git rev-parse --abbrev-ref HEAD) \
-        -X main.Version=$(cat VERSION) \
+    -ldflags "-X main.Revision=${COMMIT} \
+        -X main.Branch=${BRANCH} \
+        -X main.Version=${VERSION} \
         -X main.BuildDate=$(date -u ""+%Y%m%d-%H:%M:%S"")" \
     -o /app .
 
