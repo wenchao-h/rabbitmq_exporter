@@ -3,6 +3,8 @@
 Prometheus exporter for RabbitMQ metrics.
 Data is scraped by [prometheus](https://prometheus.io).
 
+Please note this an unofficial plugin. There is also an official plugin from [RabbitMQ.com](https://www.rabbitmq.com/prometheus.html). See [comparison to official exporter](#-Comparison-to-official-exporter)
+
 ## Installation
 
 ### Binary release
@@ -28,7 +30,7 @@ Now your metrics are exposed through [http://host:9419/metrics](http://host:9419
 
 Rabbitmq_exporter can be configured using json config file or environment variables for configuration.
 
-### Config file:
+### Config file
 
 Rabbitmq_exporter expects config file in "conf/rabbitmq.conf". If the file is found it is used as configuration source.
 The name of the file can be overriden with flag:
@@ -37,7 +39,7 @@ The name of the file can be overriden with flag:
 
 You can find an example [here](config.example.json).
 
-### Settings:
+### Settings
 
 Environment variable|default|description
 --------------------|-------|------------
@@ -125,7 +127,6 @@ metric | description
 |queue_messages_ready_global | Number of messages ready to be delivered to clients.|
 |queue_messages_unacknowledged_global | Number of messages delivered to clients but not yet acknowledged.|
 |version_info| A metric with a constant '1' value labeled by rabbitmq version, erlang version, node, cluster.|
-
 
 ### Queues
 
@@ -221,7 +222,6 @@ metric | description
 |connection_send_packets|send packets|
 |connection_send_pending|Send queue size|
 
-
 Labels: vhost, node, peer_host, user, *state* (running, flow,..), self
 
 metric | description
@@ -233,17 +233,27 @@ metric | description
 _disabled by default_
 Labels: cluster, vhost, shovel, type, self, state
 
-
 metric | description
 -------| ------------
 |shovel_state|A metric with a value of constant '1' for each shovel in a certain state|
 
-## Docker
+## Comparison to official exporter
 
-To create a docker image locally normal docker build can be used.
+[official exporter](https://www.rabbitmq.com/prometheus.html).:
 
-       docker build .
+- has runtime/erlang metrics
+- aggregated or per-object metrics
+- missing filter
 
+-
+This exporter:
+
+- works also with older versions of rabbitmq
+- has more configuration options/ filtering of objects
+- (bad) depends on data from management interface which can be slow/delayed
+
+probalby best solution is to use both exporters:
+[comment from shamil](https://github.com/kbudde/rabbitmq_exporter/issues/156#issuecomment-631979910)
 
 ## common errors: Error while retrieving data from rabbitHost / code 500
 
