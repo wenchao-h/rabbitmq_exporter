@@ -237,6 +237,35 @@ metric | description
 -------| ------------
 |shovel_state|A metric with a value of constant '1' for each shovel in a certain state|
 
+### Memory
+
+_disabled by default_
+Labels: cluster, node, self
+
+metric | description
+-------| ------------
+|memory_allocated_unused_bytes|Memory preallocated by the runtime (VM allocators) but not yet used|
+|memory_atom_bytes|Memory used by atoms. Should be fairly constant|
+|memory_binary_bytes|Memory used by shared binary data in the runtime. Most of this memory is message bodies and metadata.)|
+|memory_code_bytes|Memory used by code (bytecode, module metadata). This section is usually fairly constant and relatively small (unless the node is entirely blank and stores no data).|
+|memory_connection_channels_bytes|Memory used by client connections - channels|
+|memory_connection_other_bytes|Memory used by client connection - other|
+|memory_connection_readers|Memory used by processes responsible for connection parser and most of connection state. Most of their memory attributes to TCP buffers|
+|memory_connection_writers_bytes|Memory used by processes responsible for serialization of outgoing protocol frames and writing to client connections socktes|
+|memory_mgmt_db_bytes|Management DB ETS tables + processes|
+|memory_mnesia_bytes|Internal database (Mnesia) tables keep an in-memory copy of all its data (even on disc nodes)|
+|memory_msg_index_bytes|Message index ETS + processes|
+|memory_other_ets_bytes|Other in-memory tables besides those belonging to the stats database and internal database tables|
+|memory_other_proc_bytes|Memory used by all other processes that RabbitMQ cannot categorise|
+|memory_other_system_bytes|Memory used by all other system that RabbitMQ cannot categorise|
+|memory_plugins_bytes|Memory used by plugins (apart from the Erlang client which is counted under Connections, and the management database which is counted separately).|
+|memory_queue_procs_bytes|Memory used by class queue masters, queue indices, queue state|
+|memory_queue_slave_procs_bytes|Memory used by class queue mirrors, queue indices, queue state|
+|memory_reserved_unallocated_bytes|Memory preallocated/reserved by the kernel but not the runtime|
+|memory_total_allocated_bytes|Node-local total memory - allocated|
+|memory_total_rss_bytes|Node-local total memory - rss|
+|memory_total_erlang_bytes|Node-local total memory - erlang|
+
 ## Comparison to official exporter
 
 [official exporter](https://www.rabbitmq.com/prometheus.html).:
