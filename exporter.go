@@ -92,6 +92,10 @@ func (e *exporter) Collect(ch chan<- prometheus.Metric) {
 	e.mutex.Lock() // To protect metrics from concurrent collects.
 	defer e.mutex.Unlock()
 
+	e.upMetric.Reset()
+	e.endpointUpMetric.Reset()
+	e.endpointScrapeDurationMetric.Reset()
+
 	start := time.Now()
 	allUp := true
 
@@ -106,7 +110,6 @@ func (e *exporter) Collect(ch chan<- prometheus.Metric) {
 			allUp = false
 		}
 	}
-
 	BuildInfo.Collect(ch)
 
 	if allUp {

@@ -76,9 +76,9 @@ var allRabbitCapabilities = rabbitCapabilitySet{
 	rabbitCapBert:   true,
 }
 
-func initConfigFromFile(config_file string) error {
+func initConfigFromFile(configFile string) error {
 	config = rabbitExporterConfig{}
-	err := gonfig.GetConf(config_file, &config)
+	err := gonfig.GetConf(configFile, &config)
 	if err != nil {
 		return err
 	}
