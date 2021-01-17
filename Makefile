@@ -53,13 +53,9 @@ tarballs: promu
 	@echo ">> building crossbuild tarballs"
 	@$(PROMU) crossbuild tarballs 
 	
-docker: 
-	@echo ">> building docker image"
-	@docker build -t "$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_TAG)" .
-
 promu:
 	@GOOS=$(shell uname -s | tr A-Z a-z) \
 	        GOARCH=$(subst x86_64,amd64,$(patsubst i%86,386,$(shell uname -m))) \
 	        $(GO) get -v github.com/prometheus/promu
 
-.PHONY: all style format build test vet tarball tarballs docker promu
+.PHONY: all style format build test vet tarball tarballs promu

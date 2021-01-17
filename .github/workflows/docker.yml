@@ -13,8 +13,7 @@ on:
   workflow_dispatch:
 
 env:
-  PLATFORMS: linux/amd64,linux/arm/v7
-  #PLATFORMS: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64
+  PLATFORMS: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64
 
 jobs:
   build:
@@ -28,9 +27,8 @@ jobs:
         id: docker_meta
         uses: crazy-max/ghaction-docker-meta@v1.11.0
         with:
-          images: kbudde/test
+          images: kbudde/rabbitmq-exporter
           tag-sha: true # add git short SHA as Docker tag
-          tag-edge: true
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v1.0.1

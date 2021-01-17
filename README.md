@@ -10,7 +10,7 @@ Please note this an unofficial plugin. There is also an official plugin from [Ra
 ### Binary release
 
 You can download the latest release on the [release page](https://github.com/kbudde/rabbitmq_exporter/releases).
-Configuration is done with environment variables. See below.
+Docker images are push to [docker hub](https://hub.docker.com/r/kbudde/rabbitmq-exporter/tags)
 
 ### docker: rabbitmq container with network sharing
 
