@@ -133,6 +133,9 @@ func (tenv *TestEnvironment) MustSetPolicy(name string, pattern string) {
 
 	client := &http.Client{}
 	request, err := http.NewRequest("PUT", url, strings.NewReader(policy))
+	if err != nil {
+		log.Fatal(fmt.Errorf("could not create NewRequst: %w", err))
+	}
 	request.Header.Add("Content-Type", "application/json")
 	request.ContentLength = int64(len(policy))
 	response, err := client.Do(request)

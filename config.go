@@ -85,7 +85,7 @@ func initConfigFromFile(configFile string) error {
 
 	if url := config.RabbitURL; url != "" {
 		if valid, _ := regexp.MatchString("https?://[a-zA-Z.0-9]+", strings.ToLower(url)); !valid {
-			panic(fmt.Errorf("Rabbit URL must start with http:// or https://"))
+			panic(fmt.Errorf("rabbit URL must start with http:// or https://"))
 		}
 	}
 
@@ -103,7 +103,7 @@ func initConfig() {
 		if valid, _ := regexp.MatchString("https?://[a-zA-Z.0-9]+", strings.ToLower(url)); valid {
 			config.RabbitURL = url
 		} else {
-			panic(fmt.Errorf("Rabbit URL must start with http:// or https://"))
+			panic(fmt.Errorf("rabbit URL must start with http:// or https://"))
 		}
 	}
 
@@ -141,7 +141,7 @@ func initConfig() {
 		if _, err := strconv.Atoi(port); err == nil {
 			config.PublishPort = port
 		} else {
-			panic(fmt.Errorf("The configured port is not a valid number: %v", port))
+			panic(fmt.Errorf("the configured port is not a valid number: %v", port))
 		}
 
 	}
