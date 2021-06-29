@@ -32,7 +32,7 @@ Rabbitmq_exporter can be configured using json config file or environment variab
 
 ### Config file
 
-Rabbitmq_exporter expects config file in "conf/rabbitmq.conf". If you are running the exporter in a container (docker/kubernetes) the config mus be in "/conf/rabbitmq.conf"
+Rabbitmq_exporter expects config file in "conf/rabbitmq.conf". If you are running the exporter in a container (docker/kubernetes) the config must be in "/conf/rabbitmq.conf"
 The name of the file can be overriden with flag:
 
     ./rabbitmq_exporter -config-file config.example.json
