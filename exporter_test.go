@@ -87,6 +87,10 @@ func TestWholeApp(t *testing.T) {
 	}
 	body := w.Body.String()
 	t.Log(body)
+	lines := strings.Split(body, "\n")
+	if lc := len(lines); lc != 372 {
+		t.Errorf("expected 372 lines, got %d", lc)
+	}
 	expectSubstring(t, body, `rabbitmq_up{cluster="my-rabbit@ae74c041248b",node="my-rabbit@ae74c041248b"} 1`)
 
 	// overview
