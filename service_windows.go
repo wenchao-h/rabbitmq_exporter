@@ -5,6 +5,8 @@ import (
 	"golang.org/x/sys/windows/svc"
 )
 
+const serviceName = "rabbitmq_exporter"
+
 func runService() chan bool {
 	stopCh := make(chan bool)
 	isInteractive, err := svc.IsAnInteractiveSession()

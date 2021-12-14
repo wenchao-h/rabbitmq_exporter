@@ -6,3 +6,4 @@ rabbitmq_exporter.exe
 coverage.out
 debug.test
 vendor/
+dist/

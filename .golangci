@@ -1,6 +1,6 @@
 linters-settings:
   goimports:
-    local-prefixes: github.com/kbudde/dsa
+    local-prefixes: github.com/kbudde/rabbitmq_exporter
   golint:
     min-confidence: 0.8
   gocyclo:
