@@ -49,7 +49,9 @@ func (rep *rabbitBERTReply) MakeMap() MetricMap {
 	term := rep.objects
 
 	err := parseProplist(&flMap, "", term)
-	log.WithField("error", err).Warn("Error parsing rabbitmq reply (bert, MakeMap)")
+	if err != nil {
+		log.WithField("error", err).Warn("Error parsing rabbitmq reply (bert, MakeMap)")
+	}
 	return flMap
 }
 
@@ -338,6 +340,8 @@ func (rep *rabbitBERTReply) GetString(label string) (string, bool) {
 		}
 		return true
 	})
-	log.WithField("error", err).Warn("Error parsing rabbitmq reply (bert, GetString)")
+	if err != nil {
+		log.WithField("error", err).Warn("Error parsing rabbitmq reply (bert, GetString)")
+	}
 	return resValue, result
 }

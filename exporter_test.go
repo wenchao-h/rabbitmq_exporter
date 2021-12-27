@@ -42,15 +42,15 @@ func setupServer(t *testing.T, overview, queues, exchange, nodes, connections st
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Header().Set("Content-Type", "application/json")
-		if r.RequestURI == "/api/overview" {
+		if strings.HasPrefix(r.RequestURI, "/api/overview") {
 			fmt.Fprintln(w, overview)
-		} else if r.RequestURI == "/api/queues" {
+		} else if strings.HasPrefix(r.RequestURI, "/api/queues") {
 			fmt.Fprintln(w, queues)
-		} else if r.RequestURI == "/api/exchanges" {
+		} else if strings.HasPrefix(r.RequestURI, "/api/exchanges") {
 			fmt.Fprintln(w, exchange)
-		} else if r.RequestURI == "/api/nodes" {
+		} else if strings.HasPrefix(r.RequestURI, "/api/nodes") {
 			fmt.Fprintln(w, nodes)
-		} else if r.RequestURI == "/api/connections" {
+		} else if strings.HasPrefix(r.RequestURI, "/api/connections") {
 			fmt.Fprintln(w, connections)
 		} else {
 			t.Errorf("Invalid request. URI=%v", r.RequestURI)
@@ -426,6 +426,113 @@ func TestResetMetricsOnRabbitFailure(t *testing.T) {
 
 }
 
+func TestExporter(t *testing.T) {
+	tests := []struct {
+		name       string
+		setup      func()
+		expect     []string
+		dontExpect []string
+		lines      int
+	}{
+		{
+			name:  "Base",
+			setup: func() {},
+			expect: []string{
+				`rabbitmq_queue_messages_ready{cluster="my-rabbit@ae74c041248b",durable="true",policy="",queue="myQueue1",self="1",vhost="/"} 6`,
+				`rabbitmq_queue_messages_ready{cluster="my-rabbit@ae74c041248b",durable="true",policy="",queue="myQueue3",self="1",vhost="/"} 23`,
+				`rabbitmq_queue_messages_ready{cluster="my-rabbit@ae74c041248b",durable="true",policy="",queue="myQueue4",self="1",vhost="vhost4"} 0`,
+				`rabbitmq_queue_messages_ready{cluster="my-rabbit@ae74c041248b",durable="true",policy="ha-2",queue="myQueue2",self="1",vhost="/"} 25`,
+			},
+			dontExpect: []string{},
+			lines:      401,
+		},
+		{
+			name: "Include specific queue",
+			setup: func() {
+				config.IncludeQueues = regexp.MustCompile("myQueue3")
+				//config.SkipQueues = regexp.MustCompile(".*")
+			},
+			expect: []string{
+				`rabbitmq_queue_messages_ready{cluster="my-rabbit@ae74c041248b",durable="true",policy="",queue="myQueue3",self="1",vhost="/"} 23`,
+			},
+			dontExpect: []string{
+				`rabbitmq_queue_messages_ready{cluster="my-rabbit@ae74c041248b",durable="true",policy="",queue="myQueue1",self="1",vhost="/"} 6`,
+				`rabbitmq_queue_messages_ready{cluster="my-rabbit@ae74c041248b",durable="true",policy="",queue="myQueue4",self="1",vhost="vhost4"} 0`,
+				`rabbitmq_queue_messages_ready{cluster="my-rabbit@ae74c041248b",durable="true",policy="ha-2",queue="myQueue2",self="1",vhost="/"} 25`,
+			},
+		},
+		{
+			name: "IncludeQueues (Substring)",
+			setup: func() {
+				config.IncludeQueues = regexp.MustCompile("Queue")
+				//config.SkipQueues = regexp.MustCompile(".*")
+			},
+			expect: []string{
+				`rabbitmq_queue_messages_ready{cluster="my-rabbit@ae74c041248b",durable="true",policy="",queue="myQueue3",self="1",vhost="/"} 23`,
+				`rabbitmq_queue_messages_ready{cluster="my-rabbit@ae74c041248b",durable="true",policy="",queue="myQueue1",self="1",vhost="/"} 6`,
+				`rabbitmq_queue_messages_ready{cluster="my-rabbit@ae74c041248b",durable="true",policy="",queue="myQueue4",self="1",vhost="vhost4"} 0`,
+				`rabbitmq_queue_messages_ready{cluster="my-rabbit@ae74c041248b",durable="true",policy="ha-2",queue="myQueue2",self="1",vhost="/"} 25`,
+			},
+			dontExpect: []string{},
+		},
+		{
+			name: "Skip queues (Substring)",
+			setup: func() {
+				// config.IncludeQueues = regexp.MustCompile("Queue")
+				config.SkipQueues = regexp.MustCompile("[34]")
+			},
+			expect: []string{
+				`rabbitmq_queue_messages_ready{cluster="my-rabbit@ae74c041248b",durable="true",policy="",queue="myQueue1",self="1",vhost="/"} 6`,
+				`rabbitmq_queue_messages_ready{cluster="my-rabbit@ae74c041248b",durable="true",policy="ha-2",queue="myQueue2",self="1",vhost="/"} 25`,
+				`rabbitmq_queue_messages_published_total{cluster="my-rabbit@ae74c041248b",durable="true",policy="",queue="myQueue1",self="1",vhost="/"} 6`,
+				`rabbitmq_queue_messages_published_total{cluster="my-rabbit@ae74c041248b",durable="true",policy="ha-2",queue="myQueue2",self="1",vhost="/"} 0`,
+			},
+			dontExpect: []string{
+				`rabbitmq_queue_messages_ready{cluster="my-rabbit@ae74c041248b",durable="true",policy="",queue="myQueue4",self="1",vhost="vhost4"} 0`,
+				`rabbitmq_queue_messages_ready{cluster="my-rabbit@ae74c041248b",durable="true",policy="",queue="myQueue3",self="1",vhost="/"} 23`,
+				`rabbitmq_queue_messages_published_total{cluster="my-rabbit@ae74c041248b",durable="true",policy="",queue="myQueue3",self="1",vhost="/"} 0`,
+				`rabbitmq_queue_messages_published_total{cluster="my-rabbit@ae74c041248b",durable="true",policy="",queue="myQueue4",self="1",vhost="vhost4"} 0`,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			server := setupServer(t, overviewTestData, queuesTestData, exchangeAPIResponse, nodesAPIResponse, connectionAPIResponse)
+			defer server.Close()
+
+			initConfig()
+			config.RabbitURL = server.URL
+			tt.setup()
+
+			exporter := newExporter()
+			prometheus.MustRegister(exporter)
+			defer prometheus.Unregister(exporter)
+
+			req, _ := http.NewRequest("GET", "", nil)
+			w := httptest.NewRecorder()
+			promhttp.Handler().ServeHTTP(w, req)
+			if w.Code != http.StatusOK {
+				t.Errorf("Home page didn't return %v", http.StatusOK)
+			}
+			body := w.Body.String()
+			//	t.Log(body)
+
+			if lines := len(strings.Split(body, "\n")); tt.lines > 0 && lines != tt.lines {
+				t.Errorf("Unexpected number of lines. Expected %d, got %d", tt.lines, lines)
+			}
+
+			for _, v := range tt.expect {
+				expectSubstring(t, body, v)
+			}
+
+			for _, v := range tt.dontExpect {
+				dontExpectSubstring(t, body, v)
+			}
+		})
+	}
+}
+
 func TestQueueState(t *testing.T) {
 	server := setupServer(t, overviewTestData, queuesTestData, exchangeAPIResponse, nodesAPIResponse, connectionAPIResponse)
 	defer server.Close()
@@ -458,7 +565,7 @@ func TestQueueState(t *testing.T) {
 	expectSubstring(t, body, `rabbitmq_queue_state{cluster="my-rabbit@ae74c041248b",durable="true",policy="ha-2",queue="myQueue2",self="1",state="idle",vhost="/"} 1`)
 
 	// connections
-	expectSubstring(t, body, `rabbitmq_connection_status{cluster="my-rabbit@ae74c041248b",node="rabbit@rmq-cluster-node-04",peer_host="172.31.0.130",self="0",state="running",user="rmq_oms",vhost="/"} 1`)
+	expectSubstring(t, body, `rabbitmq_connection_status{cluster="my-rabbit@ae74c041248b",node="rabbit@rmq-cluster-node-04",peer_host="172.31.0.1129",self="0",state="running",user="rmq_oms",vhost="/"} 1`)
 	expectSubstring(t, body, `rabbitmq_connection_status{cluster="my-rabbit@ae74c041248b",node="my-rabbit@ae74c041248b",peer_host="172.31.0.130",self="1",state="running",user="rmq_oms",vhost="/"} 1`)
 
 }
