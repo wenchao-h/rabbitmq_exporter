@@ -37,7 +37,7 @@ The name of the file can be overriden with flag:
 
     ./rabbitmq_exporter -config-file config.example.json
 
-You can find an example [here](config.example.json).
+You can find an example [here](config.example.json). *Note:* If you are using a config file, you must provide all values as there is no default value.
 
 ### Settings
 
