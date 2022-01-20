@@ -29,6 +29,13 @@ changelog:
       - '^test:'
 release:
   discussion_category_name: Announcements
+  footer: |
+    ## Docker images
+
+    - `docker pull ghcr.io/kbudde/rabbitmq_exporter:{{.Version}}`
+    - `docker pull ghcr.io/kbudde/rabbitmq_exporter:{{.ShortCommit}}`
+    - `docker pull kbudde/rabbitmq-exporter:{{.Version}}`
+    - `docker pull kbudde/rabbitmq-exporter:{{.ShortCommit}}`
 
 dockers:
 - goos: linux
