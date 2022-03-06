@@ -15,11 +15,13 @@
     "skip_vhost": "^$",
     "include_vhost": ".*",
     "rabbit_capabilities": "no_sort,bert",
+    "aliveness_vhost": "/",
     "enabled_exporters": [
             "exchange",
             "node",
             "overview",
-            "queue"
+            "queue",
+            "aliveness"
     ],
     "timeout": 30,
     "max_queues": 0
