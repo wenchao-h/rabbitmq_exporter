@@ -215,11 +215,16 @@ func (e exporterQueue) Collect(ctx context.Context, ch chan<- prometheus.Metric)
 		}
 		e.stateMetric.WithLabelValues(append(labelValues, state)...).Set(1)
 
-		if f := collectLowerMetric("arguments.x-max-length", "effective_policy_definition.max-length", queue); f >= 0 {
-			limitsGaugeVec["max-length"].WithLabelValues(labelValues...).Set(f)
+		if _, ok := limitsGaugeVec["max-length"]; ok {
+			if f := collectLowerMetric("arguments.x-max-length", "effective_policy_definition.max-length", queue); f >= 0 {
+				limitsGaugeVec["max-length"].WithLabelValues(labelValues...).Set(f)
+			}
 		}
-		if f := collectLowerMetric("arguments.x-max-length-bytes", "effective_policy_definition.max-length-bytes", queue); f >= 0 {
-			limitsGaugeVec["max-length-bytes"].WithLabelValues(labelValues...).Set(f)
+
+		if _, ok := limitsGaugeVec["max-length-bytes"]; ok {
+			if f := collectLowerMetric("arguments.x-max-length-bytes", "effective_policy_definition.max-length-bytes", queue); f >= 0 {
+				limitsGaugeVec["max-length-bytes"].WithLabelValues(labelValues...).Set(f)
+			}
 		}
 
 	}
