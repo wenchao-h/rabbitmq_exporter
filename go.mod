@@ -1,7 +1,7 @@
 module github.com/kbudde/rabbitmq_exporter
 
 require (
-	github.com/kbudde/gobert v0.0.0-20180309235759-77f4c9cb2e7e
+	github.com/kbudde/gobert v0.0.0-20220512191144-9767639f5c50
 	github.com/kylelemons/godebug v1.1.0
 	github.com/ory/dockertest/v3 v3.8.1
 	github.com/prometheus/client_golang v1.11.0
