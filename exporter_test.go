@@ -565,7 +565,7 @@ func TestQueueState(t *testing.T) {
 	expectSubstring(t, body, `rabbitmq_queue_state{cluster="my-rabbit@ae74c041248b",durable="true",policy="ha-2",queue="myQueue2",self="1",state="idle",vhost="/"} 1`)
 
 	// connections
-	expectSubstring(t, body, `rabbitmq_connection_status{cluster="my-rabbit@ae74c041248b",node="rabbit@rmq-cluster-node-04",peer_host="172.31.0.1129",self="0",state="running",user="rmq_oms",vhost="/"} 1`)
+	expectSubstring(t, body, `rabbitmq_connection_status{cluster="my-rabbit@ae74c041248b",node="rabbit@rmq-cluster-node-04",peer_host="172.31.0.130",self="0",state="running",user="rmq_oms",vhost="/"} 1`)
 	expectSubstring(t, body, `rabbitmq_connection_status{cluster="my-rabbit@ae74c041248b",node="my-rabbit@ae74c041248b",peer_host="172.31.0.130",self="1",state="running",user="rmq_oms",vhost="/"} 1`)
 
 }
