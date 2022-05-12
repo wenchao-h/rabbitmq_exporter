@@ -6,6 +6,7 @@ import (
 	"errors"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"os"
 	"time"
 
@@ -65,6 +66,11 @@ func apiRequest(config rabbitExporterConfig, endpoint string) ([]byte, string, e
 	enabled, exists := config.RabbitCapabilities[rabbitCapNoSort]
 	if enabled && exists {
 		args = "?sort="
+	}
+
+	if endpoint == "aliveness-test" {
+		escapeAlivenessVhost := url.QueryEscape(config.AlivenessVhost)
+		args = "/" + escapeAlivenessVhost
 	}
 
 	req, err := http.NewRequest("GET", config.RabbitURL+"/api/"+endpoint+args, nil)
