@@ -88,8 +88,8 @@ func TestWholeApp(t *testing.T) {
 	body := w.Body.String()
 	t.Log(body)
 	lines := strings.Split(body, "\n")
-	if lc := len(lines); lc != 372 {
-		t.Errorf("expected 372 lines, got %d", lc)
+	if lc := len(lines); lc != 369 {
+		t.Errorf("expected 369 lines, got %d", lc)
 	}
 	expectSubstring(t, body, `rabbitmq_up{cluster="my-rabbit@ae74c041248b",node="my-rabbit@ae74c041248b"} 1`)
 
@@ -444,7 +444,7 @@ func TestExporter(t *testing.T) {
 				`rabbitmq_queue_messages_ready{cluster="my-rabbit@ae74c041248b",durable="true",policy="ha-2",queue="myQueue2",self="1",vhost="/"} 25`,
 			},
 			dontExpect: []string{},
-			lines:      401,
+			lines:      398,
 		},
 		{
 			name: "Include specific queue",

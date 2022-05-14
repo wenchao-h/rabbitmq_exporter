@@ -4,7 +4,7 @@ require (
 	github.com/kbudde/gobert v0.0.0-20220512191144-9767639f5c50
 	github.com/kylelemons/godebug v1.1.0
 	github.com/ory/dockertest/v3 v3.8.1
-	github.com/prometheus/client_golang v1.11.0
+	github.com/prometheus/client_golang v1.12.2
 	github.com/sirupsen/logrus v1.8.1
 	github.com/streadway/amqp v1.0.0
 	github.com/tkanos/gonfig v0.0.0-20210106201359-53e13348de2f
