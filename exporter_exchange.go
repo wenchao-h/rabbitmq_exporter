@@ -62,6 +62,20 @@ func (e exporterExchange) Collect(ctx context.Context, ch chan<- prometheus.Metr
 
 	for key, countvec := range e.exchangeMetrics {
 		for _, exchange := range exchangeData {
+			ename := exchange.labels["name"]
+			vname := exchange.labels["vhost"]
+			if vhostIncluded := config.IncludeVHost.MatchString(vname); !vhostIncluded {
+				continue
+			}
+			if skipVhost := config.SkipVHost.MatchString(vname); skipVhost {
+				continue
+			}
+			if exchangeIncluded := config.IncludeExchanges.MatchString(ename); !exchangeIncluded {
+				continue
+			}
+			if exchangeSkipped := config.SkipExchanges.MatchString(ename); exchangeSkipped {
+				continue
+			}
 			if value, ok := exchange.metrics[key]; ok {
 				// log.WithFields(log.Fields{"vhost": exchange.vhost, "exchange": exchange.name, "key": key, "value": value}).Debug("Set exchange metric for key")
 				ch <- prometheus.MustNewConstMetric(countvec, prometheus.CounterValue, value, cluster, exchange.labels["vhost"], exchange.labels["name"])
