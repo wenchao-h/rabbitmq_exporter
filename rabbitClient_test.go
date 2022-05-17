@@ -101,7 +101,7 @@ func TestExchanges(t *testing.T) {
 
 	exchanges, err := getStatsInfo(*config, "exchanges", exchangeLabelKeys)
 	expect(t, err, nil)
-	expect(t, len(exchanges), 9)
+	expect(t, len(exchanges), 12)
 	expect(t, exchanges[0].labels["name"], "")
 	expect(t, exchanges[0].labels["vhost"], "/")
 	expect(t, exchanges[1].labels["name"], "amq.direct")

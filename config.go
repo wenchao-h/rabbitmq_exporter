@@ -25,6 +25,8 @@ var (
 		KeyFile:            "client-key.pem",
 		InsecureSkipVerify: false,
 		ExcludeMetrics:     []string{},
+		SkipExchanges:      regexp.MustCompile("^$"),
+		IncludeExchanges:   regexp.MustCompile(".*"),
 		SkipQueues:         regexp.MustCompile("^$"),
 		IncludeQueues:      regexp.MustCompile(".*"),
 		SkipVHost:          regexp.MustCompile("^$"),
@@ -49,10 +51,14 @@ type rabbitExporterConfig struct {
 	KeyFile                  string              `json:"key_file"`
 	InsecureSkipVerify       bool                `json:"insecure_skip_verify"`
 	ExcludeMetrics           []string            `json:"exlude_metrics"`
+	SkipExchanges            *regexp.Regexp      `json:"-"`
+	IncludeExchanges         *regexp.Regexp      `json:"-"`
 	SkipQueues               *regexp.Regexp      `json:"-"`
 	IncludeQueues            *regexp.Regexp      `json:"-"`
 	SkipVHost                *regexp.Regexp      `json:"-"`
 	IncludeVHost             *regexp.Regexp      `json:"-"`
+	IncludeExchangesString   string              `json:"include_exchanges"`
+	SkipExchangesString      string              `json:"skip_exchanges"`
 	IncludeQueuesString      string              `json:"include_queues"`
 	SkipQueuesString         string              `json:"skip_queues"`
 	SkipVHostString          string              `json:"skip_vhost"`
@@ -91,6 +97,8 @@ func initConfigFromFile(configFile string) error {
 		}
 	}
 
+	config.SkipExchanges = regexp.MustCompile(config.SkipExchangesString)
+	config.IncludeExchanges = regexp.MustCompile(config.IncludeExchangesString)
 	config.SkipQueues = regexp.MustCompile(config.SkipQueuesString)
 	config.IncludeQueues = regexp.MustCompile(config.IncludeQueuesString)
 	config.SkipVHost = regexp.MustCompile(config.SkipVHostString)
@@ -171,6 +179,14 @@ func initConfig() {
 
 	if ExcludeMetrics := os.Getenv("EXCLUDE_METRICS"); ExcludeMetrics != "" {
 		config.ExcludeMetrics = strings.Split(ExcludeMetrics, ",")
+	}
+
+	if SkipExchanges := os.Getenv("SKIP_EXCHANGES"); SkipExchanges != "" {
+		config.SkipExchanges = regexp.MustCompile(SkipExchanges)
+	}
+
+	if IncludeExchanges := os.Getenv("INCLUDE_EXCHANGES"); IncludeExchanges != "" {
+		config.IncludeExchanges = regexp.MustCompile(IncludeExchanges)
 	}
 
 	if SkipQueues := os.Getenv("SKIP_QUEUES"); SkipQueues != "" {

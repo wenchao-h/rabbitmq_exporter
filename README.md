@@ -60,6 +60,8 @@ SKIP_VHOST | ^$ |regex, matching vhost names are not exported. First performs IN
 INCLUDE_VHOST | .* | regex vhost filter. Only queues in matching vhosts are exported
 INCLUDE_QUEUES | .* | regex queue filter. Just matching names are exported
 SKIP_QUEUES | ^$ |regex, matching queue names are not exported (useful for short-lived rpc queues). First performed INCLUDE, after SKIP
+INCLUDE_EXCHANGES | .* | regex exchange filter. (Only exchanges in matching vhosts are exported)
+SKIP_EXCHANGES  | ^$ | regex, matching exchanges names are not exported. First performed INCLUDE, after SKIP
 RABBIT_CAPABILITIES | bert,no_sort | comma-separated list of extended scraping capabilities supported by the target RabbitMQ server
 RABBIT_EXPORTERS | exchange,node,queue | List of enabled modules. Possible modules: connections,shovel,federation,exchange,node,queue,memory
 RABBIT_TIMEOUT | 30 | timeout in seconds for retrieving data from management plugin.

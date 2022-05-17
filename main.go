@@ -72,6 +72,8 @@ func main() {
 		"KEYFILE":             config.KeyFile,
 		"SKIPVERIFY":          config.InsecureSkipVerify,
 		"EXCLUDE_METRICS":     config.ExcludeMetrics,
+		"SKIP_EXCHANGES":      config.SkipExchanges.String(),
+		"INCLUDE_EXCHANGES":   config.IncludeExchanges.String(),
 		"SKIP_QUEUES":         config.SkipQueues.String(),
 		"INCLUDE_QUEUES":      config.IncludeQueues.String(),
 		"SKIP_VHOST":          config.SkipVHost.String(),
