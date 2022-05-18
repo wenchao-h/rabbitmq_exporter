@@ -50,7 +50,7 @@ dockers:
 
 - goos: linux
   goarch: arm
-  goarm: 6
+  goarm: "6"
   image_templates:
   - "kbudde/rabbitmq-exporter:linux-arm6-{{.ShortCommit}}"
   - "ghcr.io/kbudde/rabbitmq_exporter:linux-arm6-{{.ShortCommit}}"
@@ -65,7 +65,7 @@ dockers:
 
 - goos: linux
   goarch: arm
-  goarm: 7
+  goarm: "7"
   image_templates:
   - "kbudde/rabbitmq-exporter:linux-arm7-{{.ShortCommit}}"
   - "ghcr.io/kbudde/rabbitmq_exporter:linux-arm7-{{.ShortCommit}}"
