@@ -56,8 +56,8 @@ CAFILE | ca.pem | path to root certificate for access management plugin. Just ne
 CERTFILE | client-cert.pem | path to client certificate used to verify the exporter's authenticity. Will be ignored if the file does not exist
 KEYFILE | client-key.pem | path to private key used with certificate to verify the exporter's authenticity. Will be ignored if the file does not exist
 SKIPVERIFY | false | true/0 will ignore certificate errors of the management plugin
-SKIP_VHOST | ^$ |regex, matching vhost names are not exported. First performs INCLUDE_VHOST, then SKIP_VHOST
-INCLUDE_VHOST | .* | regex vhost filter. Only queues in matching vhosts are exported
+SKIP_VHOST | ^$ |regex, matching vhost names are not exported. First performs INCLUDE_VHOST, then SKIP_VHOST. Applies to queues and exchanges
+INCLUDE_VHOST | .* | regex vhost filter. Only matching vhosts are exported. Applies to queues and exchanges
 INCLUDE_QUEUES | .* | regex queue filter. Just matching names are exported
 SKIP_QUEUES | ^$ |regex, matching queue names are not exported (useful for short-lived rpc queues). First performed INCLUDE, after SKIP
 INCLUDE_EXCHANGES | .* | regex exchange filter. (Only exchanges in matching vhosts are exported)
