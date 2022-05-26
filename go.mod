@@ -3,7 +3,7 @@ module github.com/kbudde/rabbitmq_exporter
 require (
 	github.com/kbudde/gobert v0.0.0-20220512191144-9767639f5c50
 	github.com/kylelemons/godebug v1.1.0
-	github.com/ory/dockertest/v3 v3.9.0
+	github.com/ory/dockertest/v3 v3.9.1
 	github.com/prometheus/client_golang v1.12.2
 	github.com/sirupsen/logrus v1.8.1
 	github.com/streadway/amqp v1.0.0
@@ -34,7 +34,7 @@ require (
 	github.com/moby/term v0.0.0-20210619224110-3f7ff695adc6 // indirect
 	github.com/opencontainers/go-digest v1.0.0 // indirect
 	github.com/opencontainers/image-spec v1.0.2 // indirect
-	github.com/opencontainers/runc v1.1.1 // indirect
+	github.com/opencontainers/runc v1.1.2 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/prometheus/client_model v0.2.0 // indirect
 	github.com/prometheus/common v0.32.1 // indirect
