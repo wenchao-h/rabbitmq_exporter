@@ -8,7 +8,7 @@ require (
 	github.com/sirupsen/logrus v1.8.1
 	github.com/streadway/amqp v1.0.0
 	github.com/tkanos/gonfig v0.0.0-20210106201359-53e13348de2f
-	golang.org/x/sys v0.0.0-20220517195934-5e4e11fc645e
+	golang.org/x/sys v0.0.0-20220622161953-175b2fd9d664
 )
 
 require (
@@ -37,13 +37,13 @@ require (
 	github.com/opencontainers/runc v1.1.2 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/prometheus/client_model v0.2.0 // indirect
-	github.com/prometheus/common v0.32.1 // indirect
+	github.com/prometheus/common v0.35.0 // indirect
 	github.com/prometheus/procfs v0.7.3 // indirect
 	github.com/xeipuuv/gojsonpointer v0.0.0-20190905194746-02993c407bfb // indirect
 	github.com/xeipuuv/gojsonreference v0.0.0-20180127040603-bd5ef7bd5415 // indirect
 	github.com/xeipuuv/gojsonschema v1.2.0 // indirect
-	golang.org/x/net v0.0.0-20211209124913-491a49abca63 // indirect
-	google.golang.org/protobuf v1.27.1 // indirect
+	golang.org/x/net v0.0.0-20220225172249-27dd8689420f // indirect
+	google.golang.org/protobuf v1.28.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
 
