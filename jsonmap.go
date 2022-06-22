@@ -3,7 +3,9 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"strconv"
+	"time"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -128,4 +130,17 @@ func (rep *rabbitJSONReply) GetString(key string) (string, bool) {
 	}
 	value, ok := val.(string)
 	return value, ok
+}
+
+func parseTime(s string) (time.Time, error) {
+	t, err := time.Parse("2006-01-02 15:04:05", s)
+	if err == nil {
+		return t, nil
+	}
+	t, err = time.Parse("2006-01-02T15:04:05.999-07:00", s)
+	if err == nil {
+		return t, nil
+	}
+	return t, fmt.Errorf("time format does not match expectations")
+
 }

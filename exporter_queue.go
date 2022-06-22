@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"errors"
-	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
@@ -202,7 +201,8 @@ func (e exporterQueue) Collect(ctx context.Context, ch chan<- prometheus.Metric)
 		state := queue.labels["state"]
 		idleSince, exists := queue.labels["idle_since"]
 		if exists && idleSince != "" {
-			if t, err := time.Parse("2006-01-02 15:04:05", idleSince); err == nil {
+
+			if t, err := parseTime(idleSince); err == nil {
 				unixSeconds := float64(t.UnixNano()) / 1e9
 
 				if state == "running" { //replace running state with idle if idle_since time is provided. Other states (flow, etc.) are not replaced
