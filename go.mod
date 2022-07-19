@@ -5,7 +5,7 @@ require (
 	github.com/kylelemons/godebug v1.1.0
 	github.com/ory/dockertest/v3 v3.9.1
 	github.com/prometheus/client_golang v1.12.2
-	github.com/sirupsen/logrus v1.8.1
+	github.com/sirupsen/logrus v1.9.0
 	github.com/streadway/amqp v1.0.0
 	github.com/tkanos/gonfig v0.0.0-20210106201359-53e13348de2f
 	golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8
