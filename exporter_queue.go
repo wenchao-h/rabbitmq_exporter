@@ -177,10 +177,7 @@ func (e exporterQueue) Collect(ctx context.Context, ch chan<- prometheus.Metric)
 			continue
 		}
 
-		self := "0"
-		if queue.labels["node"] == selfNode {
-			self = "1"
-		}
+		self := selfLabel(config, queue.labels["node"] == selfNode)
 		labelValues := []string{cluster, queue.labels["vhost"], queue.labels["name"], queue.labels["durable"], queue.labels["policy"], self}
 
 		for key, gaugevec := range e.queueMetricsGauge {

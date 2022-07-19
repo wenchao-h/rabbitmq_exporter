@@ -43,10 +43,7 @@ func (e exporterFederation) Collect(ctx context.Context, ch chan<- prometheus.Me
 	}
 
 	for _, federation := range federationData {
-		self := "0"
-		if federation.labels["node"] == selfNode {
-			self = "1"
-		}
+		self := selfLabel(config, federation.labels["node"] == selfNode)
 		e.stateMetric.WithLabelValues(cluster, federation.labels["vhost"], federation.labels["node"], federation.labels["queue"], federation.labels["exchange"], self, federation.labels["status"]).Set(1)
 	}
 

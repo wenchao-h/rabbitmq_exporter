@@ -70,20 +70,14 @@ func (e exporterConnections) Collect(ctx context.Context, ch chan<- prometheus.M
 	for key, gauge := range e.connectionMetricsG {
 		for _, connD := range rabbitConnectionResponses {
 			if value, ok := connD.metrics[key]; ok {
-				self := "0"
-				if connD.labels["node"] == selfNode {
-					self = "1"
-				}
+				self := selfLabel(config, connD.labels["node"] == selfNode)
 				gauge.WithLabelValues(cluster, connD.labels["vhost"], connD.labels["node"], connD.labels["peer_host"], connD.labels["user"], self).Add(value)
 			}
 		}
 	}
 
 	for _, connD := range rabbitConnectionResponses {
-		self := "0"
-		if connD.labels["node"] == selfNode {
-			self = "1"
-		}
+		self := selfLabel(config, connD.labels["node"] == selfNode)
 		e.stateMetric.WithLabelValues(cluster, connD.labels["vhost"], connD.labels["node"], connD.labels["peer_host"], connD.labels["user"], connD.labels["state"], self).Add(1)
 	}
 

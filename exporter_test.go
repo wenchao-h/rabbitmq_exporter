@@ -424,6 +424,23 @@ func TestResetMetricsOnRabbitFailure(t *testing.T) {
 		dontExpectSubstring(t, body, `rabbitmq_connection_received_packets{cluster="my-rabbit@ae74c041248b",node="rabbit@rmq-cluster-node-04",peer_host="172.31.0.130",self="1",user="rmq_oms",vhost="/"}`)
 	})
 
+	t.Run("RabbitMQ is using loadbalancer -> self is always 1", func(t *testing.T) {
+		rabbitUP = true
+		rabbitQueuesUp = true
+        config.RabbitConnection = "loadbalaner"
+		req, _ := http.NewRequest("GET", "", nil)
+		w := httptest.NewRecorder()
+		promhttp.Handler().ServeHTTP(w, req)
+		if w.Code != http.StatusOK {
+			t.Errorf("Home page didn't return %v", http.StatusOK)
+		}
+		body := w.Body.String()
+		t.Log(body)
+
+		// queue
+		expectSubstring(t, body, `rabbitmq_queue_messages_ready{cluster="my-rabbit@ae74c041248b",durable="true",policy="ha-2",queue="myQueue2",self="1",vhost="/"} 25`)
+	})
+
 }
 
 func TestExporter(t *testing.T) {

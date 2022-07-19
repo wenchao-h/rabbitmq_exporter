@@ -179,3 +179,39 @@ func TestConfig_EnabledExporters(t *testing.T) {
 		t.Errorf("Invalid Exporters list. diff\n%v", diff)
 	}
 }
+
+func TestConfig_RabbitConnection_Default(t *testing.T) {
+	defer os.Unsetenv("RABBIT_CONNECTION")
+
+	os.Unsetenv("RABBIT_CONNECTION")
+	initConfig()
+
+	if config.RabbitConnection != "direct" {
+		t.Errorf("RabbitConnection unspecified. It should default to direct. expected=%v,got=%v", "direct", config.RabbitConnection)
+	}
+}
+
+func TestConfig_RabbitConnection_LoadBalaner(t *testing.T) {
+    newValue := "loadbalancer"
+	defer os.Unsetenv("RABBIT_CONNECTION")
+
+	os.Setenv("RABBIT_CONNECTION", newValue)
+	initConfig()
+
+	if config.RabbitConnection != newValue {
+		t.Errorf("RabbitConnection specified. It should be modified. expected=%v,got=%v", newValue, config.RabbitConnection)
+	}
+}
+
+func TestConfig_RabbitConnection_Invalid(t *testing.T) {
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("initConfig should panic on invalid rabbit connection config")
+		}
+    }()
+    newValue := "invalid"
+	defer os.Unsetenv("RABBIT_CONNECTION")
+
+	os.Setenv("RABBIT_CONNECTION", newValue)
+	initConfig()
+}

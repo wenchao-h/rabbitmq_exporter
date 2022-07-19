@@ -17,6 +17,7 @@ var (
 		RabbitURL:          "http://127.0.0.1:15672",
 		RabbitUsername:     "guest",
 		RabbitPassword:     "guest",
+		RabbitConnection:   "direct",
 		PublishPort:        "9419",
 		PublishAddr:        "",
 		OutputFormat:       "TTY", //JSON
@@ -43,6 +44,7 @@ type rabbitExporterConfig struct {
 	RabbitURL                string              `json:"rabbit_url"`
 	RabbitUsername           string              `json:"rabbit_user"`
 	RabbitPassword           string              `json:"rabbit_pass"`
+	RabbitConnection         string              `json:"rabbit_connection"`
 	PublishPort              string              `json:"publish_port"`
 	PublishAddr              string              `json:"publish_addr"`
 	OutputFormat             string              `json:"output_format"`
@@ -114,6 +116,14 @@ func initConfig() {
 			config.RabbitURL = url
 		} else {
 			panic(fmt.Errorf("rabbit URL must start with http:// or https://"))
+		}
+	}
+
+	if connection := os.Getenv("RABBIT_CONNECTION"); connection != "" {
+		if valid, _ := regexp.MatchString("(direct|loadbalancer)", connection); valid {
+			config.RabbitConnection = connection
+		} else {
+			panic(fmt.Errorf("rabbit connection must be direct or loadbalancer"))
 		}
 	}
 
@@ -250,4 +260,12 @@ func parseCapabilities(raw string) rabbitCapabilitySet {
 func isCapEnabled(config rabbitExporterConfig, cap rabbitCapability) bool {
 	exists, enabled := config.RabbitCapabilities[cap]
 	return exists && enabled
+}
+
+func selfLabel(config rabbitExporterConfig, isSelf bool) string {
+	if config.RabbitConnection == "loadbalancer" || isSelf {
+		return "1"
+	} else {
+		return "0"
+	}
 }
