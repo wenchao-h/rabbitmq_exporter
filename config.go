@@ -263,7 +263,9 @@ func isCapEnabled(config rabbitExporterConfig, cap rabbitCapability) bool {
 }
 
 func selfLabel(config rabbitExporterConfig, isSelf bool) string {
-	if config.RabbitConnection == "loadbalancer" || isSelf {
+	if config.RabbitConnection == "loadbalancer" {
+        return "lb"
+    } else if isSelf {
 		return "1"
 	} else {
 		return "0"

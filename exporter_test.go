@@ -427,7 +427,7 @@ func TestResetMetricsOnRabbitFailure(t *testing.T) {
 	t.Run("RabbitMQ is using loadbalancer -> self is always 1", func(t *testing.T) {
 		rabbitUP = true
 		rabbitQueuesUp = true
-        config.RabbitConnection = "loadbalaner"
+        config.RabbitConnection = "loadbalancer"
 		req, _ := http.NewRequest("GET", "", nil)
 		w := httptest.NewRecorder()
 		promhttp.Handler().ServeHTTP(w, req)
@@ -438,7 +438,7 @@ func TestResetMetricsOnRabbitFailure(t *testing.T) {
 		t.Log(body)
 
 		// queue
-		expectSubstring(t, body, `rabbitmq_queue_messages_ready{cluster="my-rabbit@ae74c041248b",durable="true",policy="ha-2",queue="myQueue2",self="1",vhost="/"} 25`)
+		expectSubstring(t, body, `rabbitmq_queue_messages_ready{cluster="my-rabbit@ae74c041248b",durable="true",policy="ha-2",queue="myQueue2",self="lb",vhost="/"} 25`)
 	})
 
 }
