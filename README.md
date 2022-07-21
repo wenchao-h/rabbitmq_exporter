@@ -288,8 +288,13 @@ probalby best solution is to use both exporters:
 
 ## common errors: Error while retrieving data from rabbitHost / code 500
 
-msg: Error while retrieving data from rabbitHost
-statusCode: 500
+### msg: Error while retrieving data from rabbitHost statusCode: 500
 
 This exporter expects capabilities from rabbitmq 3.6.8 or newer by default.
 If you are running older than 3.6.8 you have to set RABBIT_CAPABILITIES=compat.
+
+### missing data in graphs
+
+If there is a load balancer between the exporter and the RabbitMQApi, the setting `RABBIT_CONNECTION=loadbalancer` must be activated. 
+See https://github.com/kbudde/rabbitmq_exporter/issues/131 for details.
+
