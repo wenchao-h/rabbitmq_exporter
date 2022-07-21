@@ -74,10 +74,7 @@ func (e exporterNode) Collect(ctx context.Context, ch chan<- prometheus.Metric) 
 	for key, gauge := range e.nodeMetricsGauge {
 		for _, node := range nodeData {
 			if value, ok := node.metrics[key]; ok {
-				self := "0"
-				if node.labels["name"] == selfNode {
-					self = "1"
-				}
+				self := selfLabel(config, node.labels["name"] == selfNode)
 				gauge.WithLabelValues(cluster, node.labels["name"], self).Set(value)
 			}
 		}

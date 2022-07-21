@@ -45,10 +45,7 @@ func (e exporterShovel) Collect(ctx context.Context, ch chan<- prometheus.Metric
 	}
 
 	for _, shovel := range shovelData {
-		self := "0"
-		if shovel.labels["node"] == selfNode {
-			self = "1"
-		}
+		self := selfLabel(config, shovel.labels["node"] == selfNode)
 		e.stateMetric.WithLabelValues(cluster, shovel.labels["vhost"], shovel.labels["name"], shovel.labels["type"], self, shovel.labels["state"]).Set(1)
 	}
 

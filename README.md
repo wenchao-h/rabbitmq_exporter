@@ -46,6 +46,7 @@ Environment variable|default|description
 RABBIT_URL | <http://127.0.0.1:15672>| url to rabbitMQ management plugin (must start with http(s)://)
 RABBIT_USER | guest | username for rabbitMQ management plugin. User needs monitoring tag!
 RABBIT_PASSWORD | guest | password for rabbitMQ management plugin
+RABBIT_CONNECTION | direct | direct or loadbalancer, strips the self label when loadbalancer
 RABBIT_USER_FILE| | location of file with username (useful for docker secrets)
 RABBIT_PASSWORD_FILE | | location of file with password (useful for docker secrets)
 PUBLISH_PORT | 9419 | Listening port for the exporter

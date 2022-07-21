@@ -167,10 +167,7 @@ func (e exporterMemory) Collect(ctx context.Context, ch chan<- prometheus.Metric
 	}
 
 	for _, node := range nodeData {
-		self := "0"
-		if node.labels["name"] == selfNode {
-			self = "1"
-		}
+		self := selfLabel(config, node.labels["name"] == selfNode)
 		rabbitMemoryResponses, err := getMetricMap(config, fmt.Sprintf("nodes/%s/memory", node.labels["name"]))
 		if err != nil {
 			return err

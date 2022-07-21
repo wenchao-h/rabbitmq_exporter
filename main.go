@@ -64,6 +64,7 @@ func main() {
 		"PUBLISH_PORT":        config.PublishPort,
 		"RABBIT_URL":          config.RabbitURL,
 		"RABBIT_USER":         config.RabbitUsername,
+		"RABBIT_CONNECTION":   config.RabbitConnection,
 		"OUTPUT_FORMAT":       config.OutputFormat,
 		"RABBIT_CAPABILITIES": formatCapabilities(config.RabbitCapabilities),
 		"RABBIT_EXPORTERS":    config.EnabledExporters,
