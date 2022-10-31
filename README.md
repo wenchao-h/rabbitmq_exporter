@@ -286,7 +286,7 @@ This exporter:
 probalby best solution is to use both exporters:
 [comment from shamil](https://github.com/kbudde/rabbitmq_exporter/issues/156#issuecomment-631979910)
 
-## common errors: Error while retrieving data from rabbitHost / code 500
+## common errors / FAQ
 
 ### msg: Error while retrieving data from rabbitHost statusCode: 500
 
