@@ -8,7 +8,7 @@ require (
 	github.com/sirupsen/logrus v1.9.2
 	github.com/streadway/amqp v1.0.0
 	github.com/tkanos/gonfig v0.0.0-20210106201359-53e13348de2f
-	golang.org/x/sys v0.8.0
+	golang.org/x/sys v0.10.0
 )
 
 require (
